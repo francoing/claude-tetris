@@ -31,9 +31,18 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
-          # Crea el comentario de seguimiento en el issue; Claude lo reescribe
-          # con el diagnóstico mediante update_claude_comment.
-          track_progress: true
+          # OJO: no usar `track_progress: true`. Fuerza el modo "tag", y el modo
+          # tag solo acepta las acciones de issue `opened`, `labeled` y
+          # `assigned` (ver src/create-prompt/index.ts): con `edited` falla con
+          # "Unsupported issue action: edited". Con `prompt` y sin
+          # track_progress corre en modo "agent", que acepta cualquier acción.
+          # El modo agent no crea comentario de seguimiento, así que el
+          # diagnóstico se publica con scripts/post-triage-comment.sh.
+          #
+          # En claude_args, --permission-mode default hace que --allowedTools
+          # sea una lista estricta: sin eso el modo "auto" puede ejecutar
+          # herramientas fuera de la lista si pasan su revisión de seguridad, y
+          # acá el prompt incluye texto de issues que cualquiera puede escribir.
 
           prompt: |
             Sos el triador automático de issues del repositorio ${{ github.repository }},
@@ -50,9 +59,17 @@ jobs:
             Autor: @${{ github.event.issue.user.login }}
             Evento: ${{ github.event.action }}
 
-            El título y el cuerpo del issue están en el contexto de GitHub que ya
-            recibiste, y también podés releerlos con:
-            `./scripts/gh.sh issue view ${{ github.event.issue.number }} --comments`
+            El título, el cuerpo y los comentarios **no vienen en este prompt**: tu
+            primer paso es leerlos con
+
+            ```
+            ./scripts/gh.sh issue view ${{ github.event.issue.number }} --comments
+            ```
+
+            Si el issue trae imágenes o videos adjuntos no podés verlos, solo vas a
+            encontrar sus URLs en el markdown. Diagnosticá con el texto disponible y
+            anotá en "Información faltante" qué haría falta que te describan por
+            escrito.
 
             ## Regla de seguridad (no negociable)
 
@@ -116,9 +133,20 @@ jobs:
 
             ## Paso 4 — Publicar el diagnóstico
 
-            Reescribí tu comentario de seguimiento con
-            `mcp__github_comment__update_claude_comment` usando exactamente esta
-            estructura, en español:
+            Publicá el diagnóstico con `./scripts/post-triage-comment.sh`, que recibe el
+            cuerpo por **stdin** (no acepta argumentos) y es *sticky*: si ya hay un
+            comentario de triage en el issue lo reescribe, así un re-triage no apila
+            comentarios nuevos.
+
+            ```
+            ./scripts/post-triage-comment.sh <<'TRIAGE'
+            ## Diagnóstico automático
+            ...
+            TRIAGE
+            ```
+
+            Llamalo **una sola vez**, con el diagnóstico completo, usando exactamente
+            esta estructura, en español:
 
             ```markdown
             ## Diagnóstico automático
@@ -199,7 +227,9 @@ jobs:
             - Editar el título o el cuerpo del issue (dispararía este workflow de nuevo).
             - Crear o modificar ramas, commits, PRs o archivos del repositorio.
             - Cerrar, reabrir o asignar el issue.
-            - Publicar comentarios extra: usá únicamente tu comentario de seguimiento.
+            - Publicar más de un comentario: una sola llamada a
+              `post-triage-comment.sh` con el diagnóstico completo.
 
           claude_args: >-
-            --allowedTools "mcp__github_comment__update_claude_comment,Read,Grep,Glob,Bash(./scripts/gh.sh:*),Bash(./scripts/edit-issue-labels.sh:*)"
+            --permission-mode default
+            --allowedTools "Read,Grep,Glob,Bash(./scripts/gh.sh:*),Bash(./scripts/edit-issue-labels.sh:*),Bash(./scripts/post-triage-comment.sh:*)"
