@@ -37,6 +37,16 @@
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
 
+        <div class="panel-section highscores-section">
+          <span class="label">RECORDS</span>
+          <div id="highscores"></div>
+          <ul class="run-stats">
+            <li>Mejor combo: <strong id="best-combo">0</strong></li>
+            <li>Líneas máx.: <strong id="max-lines">0</strong></li>
+          </ul>
+          <button id="reset-highscores" type="button">Borrar records</button>
+        </div>
+
         <div class="panel-section controls">
           <span class="label">CONTROLS</span>
           <ul>
@@ -44,8 +54,18 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd> / <kbd>Esc</kbd> pausa</li>
           </ul>
+        </div>
+
+        <div class="panel-section skin">
+          <span class="label">SKIN</span>
+          <select id="skin-select" aria-label="Cambiar skin">
+            <option value="retro">Retro</option>
+            <option value="neon">Neón</option>
+            <option value="pastel">Pastel</option>
+            <option value="pixel">Pixel art</option>
+          </select>
         </div>
       </aside>
     </div>
@@ -54,7 +74,48 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="pause-menu" class="menu">
+          <button id="resume-btn" type="button">Reanudar</button>
+          <button id="pause-restart-btn" type="button">Reiniciar</button>
+          <button id="controls-btn" type="button" aria-expanded="false" aria-controls="pause-controls">Ver controles</button>
+          <div id="pause-controls" class="controls menu-controls hidden">
+            <ul>
+              <li><kbd>&#8592;</kbd><kbd>&#8594;</kbd> mover</li>
+              <li><kbd>&#8593;</kbd> rotar</li>
+              <li><kbd>&#8595;</kbd> bajar</li>
+              <li><kbd>Space</kbd> ca&iacute;da</li>
+              <li><kbd>P</kbd> / <kbd>Esc</kbd> pausa</li>
+            </ul>
+          </div>
+          <label class="menu-field" for="pause-level">
+            <span>Nivel inicial</span>
+            <select id="pause-level"></select>
+          </label>
+          <p class="menu-hint">Se aplica a la pr&oacute;xima partida</p>
+        </div>
+        <div id="gameover-extra" class="hidden">
+          <form id="highscore-entry" class="hidden">
+            <p class="highscore-entry-title">¡Nuevo record! Escribe tu nombre:</p>
+            <div class="highscore-entry-row">
+              <input id="player-name" type="text" maxlength="12" placeholder="Jugador" autocomplete="off" />
+              <button id="save-score-btn" type="submit">Guardar</button>
+            </div>
+          </form>
+          <div id="overlay-highscores"></div>
+        </div>
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="start-screen" class="overlay start-screen">
+      <div class="overlay-box">
+        <p class="start-title">TETRIS</p>
+        <label class="menu-field" for="start-level">
+          <span>Nivel inicial</span>
+          <select id="start-level"></select>
+        </label>
+        <button id="play-btn" type="button">JUGAR</button>
+        <div id="highscores-start"></div>
       </div>
     </div>
   </div>

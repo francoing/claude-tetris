@@ -227,3 +227,267 @@ kbd {
 .theme-toggle:hover {
   border-color: var(--accent);
 }
+
+/* ---- Pantalla de inicio y menú de pausa ---- */
+.start-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 10px;
+  padding-left: 10px;
+  color: var(--accent);
+  text-shadow: 0 0 18px var(--accent-glow);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 200px;
+}
+
+/* El menú de pausa y el botón de game over se excluyen mutuamente */
+#pause-menu {
+  display: none;
+}
+
+.overlay.is-pause #pause-menu {
+  display: flex;
+}
+
+.overlay.is-pause #restart-btn,
+.overlay.is-pause #overlay-score {
+  display: none;
+}
+
+.menu button,
+#play-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.menu button:hover,
+#play-btn:hover {
+  background: var(--accent-hover);
+}
+
+.menu-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.menu-field select {
+  background: var(--canvas-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+/* ---- Tabla de records ---- */
+.highscores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.highscores-table th {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--label);
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.highscores-table td {
+  padding: 2px 4px 2px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.highscores-table .hs-rank {
+  width: 1.5em;
+  color: var(--label);
+}
+
+.highscores-table .hs-name {
+  max-width: 7em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.highscores-table .hs-score {
+  text-align: right;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.highscore-row--new td {
+  color: var(--accent);
+  font-weight: 700;
+  background: var(--accent-glow);
+}
+
+.highscores-empty {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* En el panel lateral solo caben las tres primeras columnas */
+.panel .highscores-table .hs-extra {
+  display: none;
+}
+
+.run-stats {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.run-stats strong {
+  color: var(--accent);
+}
+
+#reset-highscores {
+  align-self: flex-start;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.menu-field select:hover {
+  border-color: var(--accent);
+}
+
+.menu-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.menu-controls {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--canvas-bg);
+}
+
+.menu-controls.hidden {
+  display: none;
+}
+
+#highscores-start:empty {
+  display: none;
+#reset-highscores:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ---- Records dentro del overlay de game over ---- */
+#gameover-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 260px;
+}
+
+#highscore-entry {
+  display: flex;
+  flex-direction: column;
+}
+
+#gameover-extra.hidden,
+#highscore-entry.hidden {
+  display: none;
+}
+
+.highscore-entry-title {
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.highscore-entry-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+#player-name {
+  flex: 1;
+  min-width: 0;
+  background: var(--canvas-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+#player-name:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#save-score-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#save-score-btn:hover {
+  background: var(--accent-hover);
+/* ---- Selector de skin ---- */
+#skin-select {
+  width: 100%;
+  margin-top: 4px;
+  background: var(--canvas-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#skin-select:hover {
+  border-color: var(--accent);
+}
+
+#skin-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
