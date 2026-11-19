@@ -13,6 +13,11 @@ const COLORS = [
   '#e57373', // Z - red
   '#90caf9', // J - azul pálido
   '#ffb74d', // L - orange
+  '#f06292', // + (plus, pentominó) - rosa
+  '#4db6ac', // U (pentominó) - teal
+  '#dce775', // Y (pentominó) - lima
+  '#e0e0e0', // single 1x1 (recompensa) - plata
+  '#a1887f', // 3x3 hueca (reto) - marrón
 ];
 
 const PIECES = [
@@ -24,9 +29,23 @@ const PIECES = [
   [[5,5,0],[0,5,5],[0,0,0]],                  // Z
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
+  [[0,8,0],[8,8,8],[0,8,0]],                  // + (plus, pentominó)
+  [[9,0,9],[9,9,9],[0,0,0]],                  // U (pentominó)
+  [[0,10,0,0],[10,10,0,0],[0,10,0,0],[0,10,0,0]], // Y (pentominó)
+  [[11]],                                      // single 1x1 (recompensa)
+  [[12,12,12],[12,0,12],[12,12,12]],          // 3x3 hueca (reto)
 ];
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
+
+// Pools de piezas. El índice es a la vez tipo, color y valor de celda.
+const TETROMINOS = [1, 2, 3, 4, 5, 6, 7];
+const PENTOMINOS = [8, 9, 10];   // +, U, Y
+const SINGLE = 11;               // recompensa tras un Tetris (no sale del pool aleatorio)
+const HOLLOW = 12;               // reto: 3x3 hueca
+
+const PENTOMINO_CHANCE = 0.15;   // probabilidad de +, U o Y
+const HOLLOW_CHANCE = 0.05;      // probabilidad de la 3x3 hueca
 
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
@@ -41,14 +60,26 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeBtn = document.getElementById('theme-toggle');
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, rewardPending;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
+function randomType() {
+  if (rewardPending) {
+    rewardPending = false;
+    return SINGLE;
+  }
+  const r = Math.random();
+  if (r < HOLLOW_CHANCE) return HOLLOW;
+  if (r < HOLLOW_CHANCE + PENTOMINO_CHANCE)
+    return PENTOMINOS[Math.floor(Math.random() * PENTOMINOS.length)];
+  return TETROMINOS[Math.floor(Math.random() * TETROMINOS.length)];
+}
+
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+  const type = randomType();
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
@@ -109,6 +140,7 @@ function clearLines() {
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    if (cleared === 4) rewardPending = true; // Tetris → la próxima pieza es el 1x1
     updateHUD();
   }
 }
@@ -137,6 +169,7 @@ function softDrop() {
 }
 
 function lockPiece() {
+  if (gameOver) return;
   merge();
   clearLines();
   spawn();
@@ -147,6 +180,7 @@ function spawn() {
   next = randomPiece();
   if (collide(current.shape, current.x, current.y)) {
     endGame();
+    return;
   }
   drawNext();
 }
@@ -199,6 +233,8 @@ function draw() {
     for (let c = 0; c < COLS; c++)
       drawBlock(ctx, c, r, board[r][c], BLOCK);
 
+  if (gameOver) return;
+
   // ghost
   const gy = ghostY();
   for (let r = 0; r < current.shape.length; r++)
@@ -226,6 +262,8 @@ function drawNext() {
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
+  animId = null;
+  draw();
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
@@ -258,6 +296,7 @@ function loop(ts) {
     }
   }
   draw();
+  if (gameOver) return;
   animId = requestAnimationFrame(loop);
 }
 
@@ -270,6 +309,7 @@ function init() {
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
+  rewardPending = false;
   lastTime = performance.now();
   next = randomPiece();
   spawn();

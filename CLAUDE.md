@@ -23,7 +23,8 @@ Todo el estado y la lógica viven en `game.js` como variables de módulo (`board
 
 Piezas clave para entender el conjunto:
 
-- **Tablero**: matriz `ROWS × COLS` donde cada celda es `0` (vacía) o un índice `1–7`. Ese índice es a la vez el tipo de pieza y el índice en `COLORS` y en `PIECES` (ambos arrays empiezan con `null` para que el índice 1 sea la pieza I). Al añadir o reordenar piezas hay que mantener alineados `COLORS`, `PIECES` y los valores dentro de cada matriz de forma.
+- **Tablero**: matriz `ROWS × COLS` donde cada celda es `0` (vacía) o un índice `1–12`. Ese índice es a la vez el tipo de pieza y el índice en `COLORS` y en `PIECES` (ambos arrays empiezan con `null` para que el índice 1 sea la pieza I). Al añadir o reordenar piezas hay que mantener alineados `COLORS`, `PIECES` y los valores dentro de cada matriz de forma.
+- **Pools de piezas**: `1–7` son los tetrominós clásicos (`TETROMINOS`); `8–10` los pentominós `+`, `U` e `Y` (`PENTOMINOS`, ~`PENTOMINO_CHANCE`); `12` es la 3×3 hueca (`HOLLOW`, ~`HOLLOW_CHANCE`, deja un agujero real al fijarse). El `11` (`SINGLE`, 1×1) **no sale del pool aleatorio**: `clearLines()` activa `rewardPending` al limpiar 4 líneas y `randomType()` lo consume, así que el 1×1 aparece en NEXT justo después de un Tetris. Ninguna pieza supera una caja 4×4, que es lo que `drawNext` puede dibujar.
 - **Rotación**: `rotateCW` transpone + invierte; `tryRotate` prueba *wall kicks* en el orden `[0, -1, 1, -2, 2]` y descarta el giro si ninguno encaja.
 - **Colisión**: `collide(shape, ox, oy)` es la única comprobación de validez; permite `y` negativa (pieza parcialmente sobre el tablero) y la usan movimiento, rotación, drops y `spawn`.
 - **Game loop**: `loop(ts)` con `requestAnimationFrame`, acumulando `dt` en `dropAccum` y bajando una fila cuando supera `dropInterval`. La pausa cancela el frame (`cancelAnimationFrame`) y al reanudar resetea `lastTime` para no acumular el tiempo pausado.
