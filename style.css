@@ -227,3 +227,99 @@ kbd {
 .theme-toggle:hover {
   border-color: var(--accent);
 }
+
+/* ---- Pantalla de inicio y menú de pausa ---- */
+.start-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 10px;
+  padding-left: 10px;
+  color: var(--accent);
+  text-shadow: 0 0 18px var(--accent-glow);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 200px;
+}
+
+/* El menú de pausa y el botón de game over se excluyen mutuamente */
+#pause-menu {
+  display: none;
+}
+
+.overlay.is-pause #pause-menu {
+  display: flex;
+}
+
+.overlay.is-pause #restart-btn,
+.overlay.is-pause #overlay-score {
+  display: none;
+}
+
+.menu button,
+#play-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.menu button:hover,
+#play-btn:hover {
+  background: var(--accent-hover);
+}
+
+.menu-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.menu-field select {
+  background: var(--canvas-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.menu-field select:hover {
+  border-color: var(--accent);
+}
+
+.menu-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.menu-controls {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--canvas-bg);
+}
+
+.menu-controls.hidden {
+  display: none;
+}
+
+#highscores-start:empty {
+  display: none;
+}
