@@ -37,6 +37,16 @@
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
 
+        <div class="panel-section highscores-section">
+          <span class="label">RECORDS</span>
+          <div id="highscores"></div>
+          <ul class="run-stats">
+            <li>Mejor combo: <strong id="best-combo">0</strong></li>
+            <li>Líneas máx.: <strong id="max-lines">0</strong></li>
+          </ul>
+          <button id="reset-highscores" type="button">Borrar records</button>
+        </div>
+
         <div class="panel-section controls">
           <span class="label">CONTROLS</span>
           <ul>
@@ -72,6 +82,16 @@
             <select id="pause-level"></select>
           </label>
           <p class="menu-hint">Se aplica a la pr&oacute;xima partida</p>
+        </div>
+        <div id="gameover-extra" class="hidden">
+          <form id="highscore-entry" class="hidden">
+            <p class="highscore-entry-title">¡Nuevo record! Escribe tu nombre:</p>
+            <div class="highscore-entry-row">
+              <input id="player-name" type="text" maxlength="12" placeholder="Jugador" autocomplete="off" />
+              <button id="save-score-btn" type="submit">Guardar</button>
+            </div>
+          </form>
+          <div id="overlay-highscores"></div>
         </div>
         <button id="restart-btn">Reiniciar</button>
       </div>
